@@ -78,6 +78,9 @@ public class Main {
 				}
 				System.out.printf("번호 : %d\n", foundArticle.id);
 				System.out.printf("날짜 : %s\n",foundArticle.regDate);
+				if (foundArticle.LastModifyDate != null) {
+					System.out.printf("수정된 날짜 : %s\n", foundArticle.LastModifyDate);	
+				}
 				System.out.printf("제목 : %s\n", foundArticle.title);
 				System.out.printf("내용 : %s\n", foundArticle.body);
 
@@ -111,6 +114,65 @@ public class Main {
 				articles.remove(foundIndex);
 
 				System.out.printf("%d번 게시물이 삭제되었습니다\n", id);
+			} else if (command.startsWith("article modify")) {
+				if (command.split(" ").length == 2) {
+					System.out.println("modify 뒤에 번호를 입력해주세요");
+					continue;
+				} else if (command.split(" ")[2].matches("[^0-9]+")) {
+					System.out.println("modify 뒤에 숫자만 입력해주세요");
+					continue;
+				}
+				
+				String cmdBits = command.split(" ")[2];
+				int id = Integer.parseInt(cmdBits);
+
+				Article foundArticle = null;
+
+				for (int i = 0; i < articles.size(); i++) {
+					Article article = articles.get(i);
+					if (article.id == id) {
+						foundArticle = article;
+						break;
+					}
+				}
+
+				if (foundArticle == null) {
+					System.out.printf("%d번 게시물은 존재하지 않습니다\n", id);
+					continue;
+				}
+				
+				System.out.printf("제목 : %s\n", foundArticle.title);
+				System.out.printf("내용 : %s\n", foundArticle.body);				
+				System.out.printf("%d번 게시물의 '제목'과 '내용'중 무엇을 수정하시겠습니까?\n", id);
+				String command_modify = sc.nextLine().trim();
+				
+				if (command_modify.equals("제목")) {
+					System.out.printf("%d번 게시물의 제목을 수정합니다\n", id);
+					System.out.printf("제목 : ");
+					String title = sc.nextLine();
+					
+					foundArticle.title = title;
+					
+					String LastModifyDate = Util.getNowDateTime();
+					
+					foundArticle.LastModifyDate = LastModifyDate;
+					
+					System.out.printf("%d번 게시물의 제목이 수정되었습니다\n", id);
+
+				} else if (command_modify.equals("내용")) {
+					System.out.printf("%d번 게시물의 내용을 수정합니다\n", id);
+					System.out.printf("내용 : ");
+					String body = sc.nextLine();
+					foundArticle.body = body;
+					
+					String LastModifyDate = Util.getNowDateTime();
+					foundArticle.LastModifyDate = LastModifyDate;
+					
+					System.out.printf("%d번 게시물의 내용이 수정되었습니다\n", id);
+				} else {
+					System.out.println("'제목' 혹은 '내용'을 입력해주세요");
+				}
+
 			} else {
 				System.out.println("존재하지 않는 명령어 입니다.");
 			}
@@ -127,6 +189,7 @@ class Article {
 	String body;
 	String regDate;
 	String regTime;
+	String LastModifyDate;
 
 	Article(int id,  String regDate, String title, String body) {
 		this.id = id;
