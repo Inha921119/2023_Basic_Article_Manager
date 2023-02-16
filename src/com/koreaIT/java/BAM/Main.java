@@ -1,8 +1,5 @@
 package com.koreaIT.java.BAM;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -36,7 +33,7 @@ public class Main {
 				System.out.println("|번호		 |제목		|날짜		");
 				for (int i = articles.size() - 1; i >= 0; i--) {
 					Article article = articles.get(i);
-					System.out.printf("|%d		 |%s		|%s		\n", article.id, article.title, article.NowDate);
+					System.out.printf("|%d		 |%s		|%s		\n", article.id, article.title, article.regDate.substring(0, 10));
 				}
 			} else if (command.equals("article write")) {
 				int id = lastArticleId + 1;
@@ -47,18 +44,18 @@ public class Main {
 				System.out.printf("내용 : ");
 				String body = sc.nextLine();
 
-				LocalDate nowdate = LocalDate.now();
-				String NowDate = nowdate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-				LocalTime nowtime = LocalTime.now();
-				String NowTime = nowtime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-
-				Article article = new Article(id, title, body, NowDate, NowTime);
+				String regDate = Util.getNowDateTime();
+				
+				Article article = new Article(id, regDate, title, body);
 				articles.add(article);
 
 				System.out.printf("%d번 글이 생성되었습니다.\n", id);
 			} else if (command.startsWith("article detail")) {
-				if (command.split(" ").length != 3) {
-					System.out.println("detail 번호를 입력해주세요");
+				if (command.split(" ").length == 2) {
+					System.out.println("detail 뒤에 번호를 입력해주세요");
+					continue;
+				} else if (command.split(" ")[2].matches("[^0-9]+")) {
+					System.out.println("detail 뒤에 숫자만 입력해주세요");
 					continue;
 				}
 
@@ -79,16 +76,20 @@ public class Main {
 					System.out.printf("%d번 게시물은 존재하지 않습니다\n", id);
 					continue;
 				}
-				System.out.println("번호 : " + foundArticle.id);
-				System.out.println("날짜 : " + foundArticle.NowDate + " " + foundArticle.NowTime);
-				System.out.println("제목 : " + foundArticle.title);
-				System.out.println("내용 : " + foundArticle.body);
+				System.out.printf("번호 : %d\n", foundArticle.id);
+				System.out.printf("날짜 : %s\n",foundArticle.regDate);
+				System.out.printf("제목 : %s\n", foundArticle.title);
+				System.out.printf("내용 : %s\n", foundArticle.body);
 
 			} else if (command.startsWith("article delete")) {
-				if (command.split(" ").length != 3) {
-					System.out.println("delete 번호를 입력해주세요");
+				if (command.split(" ").length == 2) {
+					System.out.println("delete 뒤에 번호를 입력해주세요");
+					continue;
+				} else if (command.split(" ")[2].matches("[^0-9]+")) {
+					System.out.println("delete 뒤에 숫자만 입력해주세요");
 					continue;
 				}
+				
 				String cmdBits = command.split(" ")[2];
 				int id = Integer.parseInt(cmdBits);
 
@@ -124,14 +125,13 @@ class Article {
 	int id;
 	String title;
 	String body;
-	String NowDate;
-	String NowTime;
+	String regDate;
+	String regTime;
 
-	Article(int id, String title, String body, String NowDate, String NowTime) {
+	Article(int id,  String regDate, String title, String body) {
 		this.id = id;
 		this.title = title;
 		this.body = body;
-		this.NowDate = NowDate;
-		this.NowTime = NowTime;
+		this.regDate = regDate;
 	}
 }
