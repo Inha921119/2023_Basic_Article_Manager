@@ -30,10 +30,10 @@ public class Main {
 					System.out.println("게시글이 없습니다.");
 					continue;
 				}
-				System.out.println("|번호		 |제목		|날짜		");
+				System.out.println("|번호		 |제목		|날짜		|조회수		");
 				for (int i = articles.size() - 1; i >= 0; i--) {
 					Article article = articles.get(i);
-					System.out.printf("|%d		 |%s		|%s		\n", article.id, article.title, article.regDate.substring(0, 10));
+					System.out.printf("|%d		 |%s		|%s	|%d		\n", article.id, article.title, article.regDate.substring(0, 10), article.viewcount);
 				}
 			} else if (command.equals("article write")) {
 				int id = lastArticleId + 1;
@@ -46,7 +46,11 @@ public class Main {
 
 				String regDate = Util.getNowDateTime();
 				
+				
 				Article article = new Article(id, regDate, title, body);
+				
+				article.viewcount = 0;
+				
 				articles.add(article);
 
 				System.out.printf("%d번 글이 생성되었습니다.\n", id);
@@ -76,13 +80,18 @@ public class Main {
 					System.out.printf("%d번 게시물은 존재하지 않습니다\n", id);
 					continue;
 				}
+				
+				foundArticle.viewcount++;
+				
 				System.out.printf("번호 : %d\n", foundArticle.id);
 				System.out.printf("날짜 : %s\n",foundArticle.regDate);
 				if (foundArticle.LastModifyDate != null) {
 					System.out.printf("수정된 날짜 : %s\n", foundArticle.LastModifyDate);	
 				}
+				System.out.printf("조회수 : %d회\n", foundArticle.viewcount);
 				System.out.printf("제목 : %s\n", foundArticle.title);
 				System.out.printf("내용 : %s\n", foundArticle.body);
+				
 
 			} else if (command.startsWith("article delete")) {
 				if (command.split(" ").length == 2) {
@@ -190,6 +199,7 @@ class Article {
 	String regDate;
 	String regTime;
 	String LastModifyDate;
+	int viewcount;
 
 	Article(int id,  String regDate, String title, String body) {
 		this.id = id;
