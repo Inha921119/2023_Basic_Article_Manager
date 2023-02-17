@@ -9,6 +9,7 @@ public class Main {
 	public static int lastArticleId = 0;
 	public static List<Article> articles;
 	
+	
 	static {
 		articles = new ArrayList<>();
 	}
