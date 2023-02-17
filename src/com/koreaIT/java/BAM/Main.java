@@ -1,18 +1,23 @@
 package com.koreaIT.java.BAM;
-
+// 개인용
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+	
+	public static int lastArticleId = 0;
+	public static List<Article> articles;
+	
+	static {
+		articles = new ArrayList<>();
+	}
 	public static void main(String[] args) {
 		System.out.println("== 프로그램 시작 ==");
-
+		
+		makeTestData();
+		
 		Scanner sc = new Scanner(System.in);
-
-		int lastArticleId = 0;
-
-		List<Article> articles = new ArrayList<>();
 
 		while (true) {
 			System.out.printf("명령어) ");
@@ -49,8 +54,6 @@ public class Main {
 				
 				Article article = new Article(id, regDate, title, body);
 				
-				article.viewcount = 0;
-				
 				articles.add(article);
 
 				System.out.printf("%d번 글이 생성되었습니다.\n", id);
@@ -81,7 +84,7 @@ public class Main {
 					continue;
 				}
 				
-				foundArticle.viewcount++;
+				foundArticle.increseViewCount();
 				
 				System.out.printf("번호 : %d\n", foundArticle.id);
 				System.out.printf("날짜 : %s\n",foundArticle.regDate);
@@ -190,6 +193,19 @@ public class Main {
 
 		sc.close();
 	}
+	static void makeTestData() {
+		System.out.println("테스트를 위한 데이터를 생성합니다");
+		for (int i = 0; i < 3; i++) {
+			int id = lastArticleId + 1;
+			lastArticleId = id;
+			String title = "Test" + (i + 1);
+			String body = "test" + (i + 1);
+			String regDate = Util.getNowDateTime();
+			
+			Article article = new Article(id, regDate, title, body);
+			articles.add(article);
+		}
+	}
 }
 
 class Article {
@@ -201,10 +217,14 @@ class Article {
 	String LastModifyDate;
 	int viewcount;
 
-	Article(int id,  String regDate, String title, String body) {
+	Article(int id, String regDate, String title, String body) {
 		this.id = id;
 		this.title = title;
 		this.body = body;
 		this.regDate = regDate;
+		this.viewcount = 0;
+	}
+	void increseViewCount () {
+		viewcount++;
 	}
 }
