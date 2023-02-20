@@ -34,6 +34,8 @@ public class App {
 			if (command.equals("exit")) {
 				break;
 			}
+
+
 			if (command.equals("article list")) {
 				if (lastArticleId == 0) {
 					System.out.println("게시글이 없습니다.");
@@ -72,17 +74,9 @@ public class App {
 
 				String cmdBits = command.split(" ")[2];
 				int id = Integer.parseInt(cmdBits);
-// 여기부터
-				Article foundArticle = null;
 
-				for (int i = 0; i < articles.size(); i++) {
-					Article article = articles.get(i);
-					if (article.id == id) {
-						foundArticle = article;
-						break;
-					}
-				}
-// 여기까지 -> id로 게시물 검색 로직 
+				Article foundArticle = getArticleById(id);
+
 				if (foundArticle == null) {
 					System.out.printf("%d번 게시물은 존재하지 않습니다\n", id);
 					continue;
@@ -111,22 +105,13 @@ public class App {
 				String cmdBits = command.split(" ")[2];
 				int id = Integer.parseInt(cmdBits);
 
-				int foundIndex = -1;
+				Article foundArticle = getArticleById(id);
 
-				for (int i = 0; i < articles.size(); i++) {
-					Article article = articles.get(i);
-
-					if (article.id == id) {
-						foundIndex = i;
-						break;
-					}
-				}
-
-				if (foundIndex == -1) {
+				if (foundArticle == null) {
 					System.out.printf("%d번 게시물은 존재하지 않습니다\n", id);
 					continue;
 				}
-				articles.remove(foundIndex);
+				articles.remove(articles.indexOf(foundArticle));
 
 				System.out.printf("%d번 게시물이 삭제되었습니다\n", id);
 			} else if (command.startsWith("article modify")) {
@@ -141,15 +126,7 @@ public class App {
 				String cmdBits = command.split(" ")[2];
 				int id = Integer.parseInt(cmdBits);
 
-				Article foundArticle = null;
-
-				for (int i = 0; i < articles.size(); i++) {
-					Article article = articles.get(i);
-					if (article.id == id) {
-						foundArticle = article;
-						break;
-					}
-				}
+				Article foundArticle = getArticleById(id);
 
 				if (foundArticle == null) {
 					System.out.printf("%d번 게시물은 존재하지 않습니다\n", id);
@@ -195,6 +172,15 @@ public class App {
 		System.out.println("== 프로그램 끝 ==");
 
 		sc.close();
+	}
+
+	private Article getArticleById(int id) {
+		for (Article article : articles) {
+			if (article.id == id) {
+				return article;
+			}
+		}
+		return null;
 	}
 
 	private void makeTestData() {
