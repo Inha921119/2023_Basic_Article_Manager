@@ -8,13 +8,13 @@ import java.util.Scanner;
 import com.koreaIT.java.BAM.Util.Util;
 import com.koreaIT.java.BAM.dto.Article;
 
-@SuppressWarnings("unused")
+//@SuppressWarnings("unused")
 
 public class ArticleController extends Controller {
-	List<Article> articles;
-	Scanner sc;
+	private List<Article> articles;
+	private Scanner sc;
 	private String command;
-	private String actionMethodName;
+//	private String actionMethodName;
 	int lastArticleId;
 
 	public ArticleController(Scanner sc) {
@@ -22,11 +22,11 @@ public class ArticleController extends Controller {
 		this.sc = sc;
 		this.lastArticleId = 3;
 	}
-
-
+	
+	@Override
 	public void doAction(String command, String actionMethodName) {
 		this.command = command;
-		this.actionMethodName = actionMethodName;
+//		this.actionMethodName = actionMethodName;
 
 		switch (actionMethodName) {
 		case "list":
@@ -51,7 +51,7 @@ public class ArticleController extends Controller {
 		}
 	}
 
-	public void showList() {
+	private void showList() {
 		if (articles.size() == 0) {
 			System.out.println("게시글이 없습니다");
 		}
@@ -86,7 +86,7 @@ public class ArticleController extends Controller {
 
 	}
 
-	public void doWrite() {
+	private void doWrite() {
 		int id = lastArticleId + 1;
 		String writer = MemberController.loginedMember.loginId;
 		System.out.printf("제목 : ");
@@ -105,16 +105,18 @@ public class ArticleController extends Controller {
 		lastArticleId++;
 	}
 
-	public void showDetail() {
-		if (command.split(" ")[2].matches("[^0-9]+")) {
+	private void showDetail() {
+		String[] cmdBits = command.split(" ");
+
+		if (cmdBits.length == 2) {
+			System.out.println("detail 뒤에 번호를 입력해주세요");
+			return;
+		} else if (command.split(" ")[2].matches("[^0-9]+")) {
 			System.out.println("detail 뒤에 숫자만 입력해주세요");
 			return;
 		}
-		int id = getEndNum(command);
-		if (id == -1) {
-			System.out.println("detail 뒤에 번호를 입력해주세요");
-			return;
-		} 
+
+		int id = Integer.parseInt(cmdBits[2]);
 
 		Article foundArticle = getArticleById(id);
 
@@ -138,16 +140,18 @@ public class ArticleController extends Controller {
 
 	}
 
-	public void doDelete() {
-		if (command.split(" ")[2].matches("[^0-9]+")) {
+	private void doDelete() {
+		String[] cmdBits = command.split(" ");
+
+		if (cmdBits.length == 2) {
+			System.out.println("delete 뒤에 번호를 입력해주세요");
+			return;
+		} else if (command.split(" ")[2].matches("[^0-9]+")) {
 			System.out.println("delete 뒤에 숫자만 입력해주세요");
 			return;
 		}
-		int id = getEndNum(command);
-		if (id == -1) {
-			System.out.println("delete 뒤에 번호를 입력해주세요");
-			return;
-		}
+
+		int id = Integer.parseInt(cmdBits[2]);
 
 		Article foundArticle = getArticleById(id);
 
@@ -164,16 +168,18 @@ public class ArticleController extends Controller {
 		}
 	}
 
-	public void doModify() {
-		if (command.split(" ")[2].matches("[^0-9]+")) {
+	private void doModify() {
+		String[] cmdBits = command.split(" ");
+
+		if (cmdBits.length == 2) {
+			System.out.println("modify 뒤에 번호를 입력해주세요");
+			return;
+		} else if (command.split(" ")[2].matches("[^0-9]+")) {
 			System.out.println("modify 뒤에 숫자만 입력해주세요");
 			return;
 		}
-		int id = getEndNum(command);
-		if (id == -1) {
-			System.out.println("modify 뒤에 번호를 입력해주세요");
-			return;
-		}
+
+		int id = Integer.parseInt(cmdBits[2]);
 		
 		Article foundArticle = getArticleById(id);
 
@@ -229,18 +235,6 @@ public class ArticleController extends Controller {
 			}
 		}
 		return null;
-	}
-
-	private int getEndNum(String command) {
-		String[] cmdBits = command.split(" ");
-
-		if (cmdBits.length == 2) {
-			return -1;
-		}
-
-		int id = Integer.parseInt(cmdBits[2]);
-
-		return id;
 	}
 
 	public void makeTestData() {

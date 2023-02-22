@@ -14,7 +14,7 @@ public class MemberController extends Controller {
 	private Scanner sc;
 	public static Member loginedMember = null;
 	private String command;
-	public String actionMethodName;
+//	private String actionMethodName;
 	int lastMemberId;
 	
 	public MemberController(Scanner sc) {
@@ -23,9 +23,10 @@ public class MemberController extends Controller {
 		this.lastMemberId = 3;
 	}
 	
+	@Override
 	public void doAction(String command, String actionMethodName) {
 		this.command = command;
-		this.actionMethodName = actionMethodName;
+//		this.actionMethodName = actionMethodName;
 
 		switch (actionMethodName) {
 		case "join":
@@ -47,7 +48,7 @@ public class MemberController extends Controller {
 		}
 	}
 
-	public void doJoin() {
+	private void doJoin() {
 		int id = lastMemberId + 1;
 
 		String loginId = null;
