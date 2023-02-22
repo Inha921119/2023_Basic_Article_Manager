@@ -16,13 +16,13 @@ public class MemberController extends Controller {
 	private String command;
 //	private String actionMethodName;
 	int lastMemberId;
-	
+
 	public MemberController(Scanner sc) {
 		this.members = new ArrayList<>();
 		this.sc = sc;
 		this.lastMemberId = 3;
 	}
-	
+
 	@Override
 	public void doAction(String command, String actionMethodName) {
 		this.command = command;
@@ -37,6 +37,9 @@ public class MemberController extends Controller {
 			break;
 		case "logout":
 			doLogout();
+			break;
+		case "delete":
+			doDelete();
 			break;
 		case "profile":
 			showProfile();
@@ -59,8 +62,8 @@ public class MemberController extends Controller {
 			if (loginIdDupChk(loginId) == false) {
 				System.out.printf("%s은(는) 이미 사용중인 아이디입니다\n", loginId);
 				continue;
-			} 
-			
+			}
+
 			if (loginId.equals("")) {
 				System.out.println("필수 정보입니다.");
 				continue;
@@ -87,7 +90,7 @@ public class MemberController extends Controller {
 			}
 			break;
 		}
-		
+
 		String name = null;
 		while (true) {
 			System.out.printf("이름 : ");
@@ -100,13 +103,14 @@ public class MemberController extends Controller {
 		}
 
 		String regDate = Util.getNowDateTime();
-		
+
 		Member member = new Member(id, regDate, loginId, loginPw, name);
 		members.add(member);
 
 		System.out.printf("%s님 회원가입이 완료되었습니다.\n", loginId);
 		lastMemberId++;
 	}
+
 	private void doLogin() {
 		if (loginedMember != null) {
 			System.out.printf("현재 접속중입니다.\n다시 로그인을 원하시면 로그아웃을 해주세요\n");
@@ -115,22 +119,22 @@ public class MemberController extends Controller {
 		while (true) {
 			System.out.printf("아이디 : ");
 			String loginId = sc.nextLine();
-			
+
 			System.out.printf("비밀번호 : ");
 			String loginPw = sc.nextLine();
-			
+
 			Member member = getMemberByLoginId(loginId);
-			
+
 			if (member == null) {
 				System.out.println("해당 회원은 존재하지 않습니다");
 				continue;
 			}
-			
+
 			if (member.loginPw.equals(loginPw) == false) {
 				System.out.println("비밀번호를 확인해주세요");
 				continue;
 			}
-			
+
 			loginedMember = member;
 			loginedMember.lastLoginDate = Util.getNowDateTime();
 			System.out.println("로그인 되었습니다");
@@ -146,6 +150,31 @@ public class MemberController extends Controller {
 		}
 		loginedMember = null;
 		System.out.println("로그아웃 되었습니다");
+	}
+
+	private void doDelete() {
+		if (loginedMember == null) {
+			System.out.printf("로그인 후 사용가능합니다\n");
+			return;
+		}
+		System.out.println("탈퇴하시겠습니까? Y / N");
+		String deleteCheck = sc.nextLine().trim();
+
+		if (deleteCheck.equals("Y") || deleteCheck.equals("y")) {
+//			loginedMember.remove(loginedMember.indexOf(loginedMember));
+
+			loginedMember = null;
+			System.out.println("탈퇴가 완료되었습니다");
+			System.out.println("초기화면으로 돌아갑니다");
+			return;
+		} else if (deleteCheck.equals("N") || deleteCheck.equals("n")) {
+			System.out.println("초기화면으로 돌아갑니다");
+			return;
+		} else {
+			System.out.println("'Y'/'y' 또는 'N'/'n' 을 입력해주세요");
+			return;
+		}
+
 	}
 
 	private void showProfile() {
@@ -174,7 +203,7 @@ public class MemberController extends Controller {
 		}
 		return;
 	}
-	
+
 	private Member getMemberByLoginId(String loginId) {
 		int index = getMemberIndexByLoginId(loginId);
 
@@ -184,7 +213,7 @@ public class MemberController extends Controller {
 
 		return members.get(index);
 	}
-	
+
 	private int getMemberIndexByLoginId(String loginId) {
 		int i = 0;
 		for (Member member : members) {
@@ -204,7 +233,7 @@ public class MemberController extends Controller {
 		}
 		return true;
 	}
-	
+
 	public void makeTestData() {
 		System.out.println("계정 테스트 데이터를 생성합니다");
 		members.add(new Member(1, Util.getNowDateTime(), "test1", "1111", "test1"));

@@ -22,7 +22,7 @@ public class ArticleController extends Controller {
 		this.sc = sc;
 		this.lastArticleId = 3;
 	}
-	
+
 	@Override
 	public void doAction(String command, String actionMethodName) {
 		this.command = command;
@@ -36,12 +36,24 @@ public class ArticleController extends Controller {
 			doWrite();
 			break;
 		case "detail":
+			if (cmdEndNumCheck() == false) {
+				System.out.println("명령어 뒤에 번호를 입력해주세요");
+				break;
+			}
 			showDetail();
 			break;
 		case "delete":
+			if (cmdEndNumCheck() == false) {
+				System.out.println("명령어 뒤에 번호를 입력해주세요");
+				break;
+			}
 			doDelete();
 			break;
 		case "modify":
+			if (cmdEndNumCheck() == false) {
+				System.out.println("명령어 뒤에 번호를 입력해주세요");
+				break;
+			}
 			doModify();
 			break;
 		default:
@@ -106,17 +118,7 @@ public class ArticleController extends Controller {
 	}
 
 	private void showDetail() {
-		String[] cmdBits = command.split(" ");
-
-		if (cmdBits.length == 2) {
-			System.out.println("detail 뒤에 번호를 입력해주세요");
-			return;
-		} else if (command.split(" ")[2].matches("[^0-9]+")) {
-			System.out.println("detail 뒤에 숫자만 입력해주세요");
-			return;
-		}
-
-		int id = Integer.parseInt(cmdBits[2]);
+		int id = getEndNum(command);
 
 		Article foundArticle = getArticleById(id);
 
@@ -141,17 +143,7 @@ public class ArticleController extends Controller {
 	}
 
 	private void doDelete() {
-		String[] cmdBits = command.split(" ");
-
-		if (cmdBits.length == 2) {
-			System.out.println("delete 뒤에 번호를 입력해주세요");
-			return;
-		} else if (command.split(" ")[2].matches("[^0-9]+")) {
-			System.out.println("delete 뒤에 숫자만 입력해주세요");
-			return;
-		}
-
-		int id = Integer.parseInt(cmdBits[2]);
+		int id = getEndNum(command);
 
 		Article foundArticle = getArticleById(id);
 
@@ -169,18 +161,8 @@ public class ArticleController extends Controller {
 	}
 
 	private void doModify() {
-		String[] cmdBits = command.split(" ");
+		int id = getEndNum(command);
 
-		if (cmdBits.length == 2) {
-			System.out.println("modify 뒤에 번호를 입력해주세요");
-			return;
-		} else if (command.split(" ")[2].matches("[^0-9]+")) {
-			System.out.println("modify 뒤에 숫자만 입력해주세요");
-			return;
-		}
-
-		int id = Integer.parseInt(cmdBits[2]);
-		
 		Article foundArticle = getArticleById(id);
 
 		if (foundArticle == null) {
@@ -235,6 +217,23 @@ public class ArticleController extends Controller {
 			}
 		}
 		return null;
+	}
+
+	private static int getEndNum(String command) {
+		String[] cmdBits = command.split(" ");
+
+		int id = Integer.parseInt(cmdBits[2]);
+
+		return id;
+	}
+
+	private boolean cmdEndNumCheck() {
+		if (command.split(" ").length == 2) {
+			return false;
+		} else if (command.split(" ")[2].matches("[^0-9]+")) {
+			return false;
+		}
+		return true;
 	}
 
 	public void makeTestData() {
