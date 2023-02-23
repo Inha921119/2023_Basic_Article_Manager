@@ -109,7 +109,8 @@ public class MemberController extends Controller {
 
 	private void doLogin() {
 		if (isLogined()) {
-			System.out.printf("현재 접속중입니다.\n다시 로그인을 원하시면 로그아웃을 해주세요\n");
+			System.out.println("현재 접속중입니다.");
+			System.out.println("다시 로그인을 원하시면 로그아웃을 해주세요.");
 			return;
 		}
 
@@ -131,8 +132,10 @@ public class MemberController extends Controller {
 			}
 			
 			if (pwWrongCount == 4) {
-				System.out.println("비밀번호 5회 오류입니다");
 				pwWrongCount++;
+				System.out.printf("비밀번호 오류 횟수 : %d\n", pwWrongCount);
+				System.out.println("비밀번호 5회 오류입니다");
+				System.out.println("비밀번호와 보안문자를 입력해주세요");
 				continue;
 			}
 			
@@ -147,8 +150,8 @@ public class MemberController extends Controller {
 						.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
 						.toString();
 				
-				System.out.println("보안문자를 입력해주세요");
-				System.out.println(otp);
+				System.out.printf("보안문자 : %s\n" ,otp);
+				System.out.printf("입력 : ");
 				String otpCheck = sc.nextLine();
 				if (otp.equals(otpCheck) && member.loginPw.equals(loginPw) == true) {
 					loginedMember = member;
@@ -158,6 +161,7 @@ public class MemberController extends Controller {
 					break;
 				}
 				System.out.println("비밀번호와 보안문자를 확인해주세요");
+				pwWrongCount++;
 				continue;
 			}
 			
@@ -165,6 +169,7 @@ public class MemberController extends Controller {
 				if (pwWrongCount < 5) {
 					System.out.println("비밀번호를 확인해주세요");
 					pwWrongCount++;
+					System.out.printf("비밀번호 오류 횟수 : %d\n", pwWrongCount);
 					continue;
 				}
 			}
@@ -180,6 +185,7 @@ public class MemberController extends Controller {
 	private void doLogout() {
 		if (isLogined() == false) {
 			System.out.println("로그인 후 사용가능합니다");
+			return;
 		}
 		loginedMember = null;
 		System.out.println("로그아웃 되었습니다");
