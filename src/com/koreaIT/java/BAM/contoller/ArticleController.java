@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import com.koreaIT.java.BAM.Util.Util;
 import com.koreaIT.java.BAM.dto.Article;
+import com.koreaIT.java.BAM.dto.Member;
 
 //@SuppressWarnings("unused")
 
@@ -36,24 +37,12 @@ public class ArticleController extends Controller {
 			doWrite();
 			break;
 		case "detail":
-			if (cmdEndNumCheck() == false) {
-				System.out.println("명령어 뒤에 번호를 입력해주세요");
-				break;
-			}
 			showDetail();
 			break;
 		case "delete":
-			if (cmdEndNumCheck() == false) {
-				System.out.println("명령어 뒤에 번호를 입력해주세요");
-				break;
-			}
 			doDelete();
 			break;
 		case "modify":
-			if (cmdEndNumCheck() == false) {
-				System.out.println("명령어 뒤에 번호를 입력해주세요");
-				break;
-			}
 			doModify();
 			break;
 		default:
@@ -88,19 +77,32 @@ public class ArticleController extends Controller {
 			}
 
 		}
+		
+		String writerName = null;
 
 		System.out.println("|번호	|제목		|날짜		|작성자		|조회수		");
 		Collections.reverse(printArticles);
+		
 		for (Article article : printArticles) {
-			System.out.printf("|%d	|%s		|%s	|%s		|%d		\n", article.id, article.title,
-					article.regDate.substring(0, 10), article.writer, article.viewcount);
+			for (Member member : members) {
+				if (article.writerId == member.id) {
+					writerName = member.loginId;
+					break;
+				}
+			}
+			
+			System.out.printf("|%d	|%.6s		|%s	|%.5s		|%d		\n", article.id, article.title,
+					article.regDate.substring(0, 10), writerName, article.viewcount);
 		}
 
 	}
 
 	private void doWrite() {
+		if (isLogined() == false) {
+			System.out.println("로그인 후 사용가능합니다");
+		}
 		int id = lastArticleId + 1;
-		String writer = MemberController.loginedMember.loginId;
+		int writerId = loginedMember.id;
 		System.out.printf("제목 : ");
 		String title = sc.nextLine();
 
@@ -109,8 +111,8 @@ public class ArticleController extends Controller {
 
 		String regDate = Util.getNowDateTime();
 
-		Article article = new Article(id, regDate, writer, title, body);
-
+		Article article = new Article(id, regDate, writerId, title, body);
+		
 		articles.add(article);
 
 		System.out.printf("%d번 글이 생성되었습니다.\n", id);
@@ -119,6 +121,10 @@ public class ArticleController extends Controller {
 
 	private void showDetail() {
 		int id = getEndNum(command);
+		if (id == -1) {
+			System.out.println("명령어 뒤에 번호를 입력해주세요");
+			return;
+		}
 
 		Article foundArticle = getArticleById(id);
 
@@ -127,11 +133,21 @@ public class ArticleController extends Controller {
 			return;
 		}
 
-		if (MemberController.loginedMember.loginId != foundArticle.writer) {
+		if (loginedMember.id != foundArticle.writerId) {
 			foundArticle.increseViewCount();
+		}
+		
+		String writerName = null;
+
+		for (Member member : members) {
+			if (foundArticle.writerId == member.id) {
+				writerName = member.loginId;
+				break;
+			}
 		}
 
 		System.out.printf("번호 : %d\n", foundArticle.id);
+		System.out.printf("작성자 : %s\n", writerName);
 		System.out.printf("날짜 : %s\n", foundArticle.regDate);
 		if (foundArticle.LastModifyDate != null) {
 			System.out.printf("수정된 날짜 : %s\n", foundArticle.LastModifyDate);
@@ -143,11 +159,18 @@ public class ArticleController extends Controller {
 	}
 
 	private void doDelete() {
+		if (isLogined() == false) {
+			System.out.println("로그인 후 사용가능합니다");
+		}
 		int id = getEndNum(command);
+		if (id == -1) {
+			System.out.println("명령어 뒤에 번호를 입력해주세요");
+			return;
+		}
 
 		Article foundArticle = getArticleById(id);
 
-		if (articles.get(articles.indexOf(foundArticle)).writer == MemberController.loginedMember.loginId) {
+		if (articles.get(articles.indexOf(foundArticle)).writerId == loginedMember.id) {
 			articles.remove(articles.indexOf(foundArticle));
 			System.out.printf("%d번 게시물이 삭제되었습니다\n", id);
 		} else {
@@ -161,7 +184,14 @@ public class ArticleController extends Controller {
 	}
 
 	private void doModify() {
+		if (isLogined() == false) {
+			System.out.println("로그인 후 사용가능합니다");
+		}
 		int id = getEndNum(command);
+		if (id == -1) {
+			System.out.println("명령어 뒤에 번호를 입력해주세요");
+			return;
+		}
 
 		Article foundArticle = getArticleById(id);
 
@@ -170,7 +200,7 @@ public class ArticleController extends Controller {
 			return;
 		}
 
-		if (foundArticle.writer == MemberController.loginedMember.loginId) {
+		if (foundArticle.writerId == loginedMember.id) {
 			System.out.printf("제목 : %s\n", foundArticle.title);
 			System.out.printf("내용 : %s\n", foundArticle.body);
 			System.out.printf("%d번 게시물의 '제목'과 '내용'중 무엇을 수정하시겠습니까?\n", id);
@@ -204,7 +234,7 @@ public class ArticleController extends Controller {
 				System.out.println("'제목' 혹은 '내용'을 입력해주세요");
 			}
 		}
-		if (foundArticle.writer != MemberController.loginedMember.loginId) {
+		if (foundArticle.writerId != loginedMember.id) {
 			System.out.println("편집할 권한이 없습니다");
 			return;
 		}
@@ -220,6 +250,12 @@ public class ArticleController extends Controller {
 	}
 
 	private static int getEndNum(String command) {
+		if (command.split(" ").length == 2) {
+			return -1;
+		} else if (command.split(" ")[2].matches("[^0-9]+")) {
+			return -1;
+		}
+		
 		String[] cmdBits = command.split(" ");
 
 		int id = Integer.parseInt(cmdBits[2]);
@@ -227,19 +263,10 @@ public class ArticleController extends Controller {
 		return id;
 	}
 
-	private boolean cmdEndNumCheck() {
-		if (command.split(" ").length == 2) {
-			return false;
-		} else if (command.split(" ")[2].matches("[^0-9]+")) {
-			return false;
-		}
-		return true;
-	}
-
 	public void makeTestData() {
 		System.out.println("게시물 테스트 데이터를 생성합니다");
-		articles.add(new Article(1, Util.getNowDateTime(), "admin1", "제목1", "내용1", 11));
-		articles.add(new Article(2, Util.getNowDateTime(), "admin2", "제목2", "내용2", 22));
-		articles.add(new Article(3, Util.getNowDateTime(), "admin3", "제목3", "내용3", 33));
+		articles.add(new Article(1, Util.getNowDateTime(), 1, "제목1", "내용1", 11));
+		articles.add(new Article(2, Util.getNowDateTime(), 2, "제목2", "내용2", 22));
+		articles.add(new Article(3, Util.getNowDateTime(), 3, "제목3", "내용3", 33));
 	}
 }

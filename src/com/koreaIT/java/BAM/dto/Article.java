@@ -4,20 +4,20 @@ public class Article extends Dto {
 	public String title;
 	public String body;
 	public int viewcount;
-	public String writer;
+	public int writerId;
 	public String LastModifyDate;
 	
-	public Article(int id, String regDate, String writer, String title, String body){
-		this(id, regDate, writer, title, body, 0);
+	public Article(int id, String regDate, int writerId, String title, String body){
+		this(id, regDate, writerId, title, body, 0);
 	}
 	
-	public Article(int id, String regDate, String writer, String title, String body, int viewcount) {
+	public Article(int id, String regDate, int writerId, String title, String body, int viewcount) {
 		this.id = id;
 		this.title = title;
 		this.body = body;
 		this.regDate = regDate;
 		this.viewcount = viewcount;
-		this.writer = writer;
+		this.writerId = writerId;
 	}
 
 	public void increseViewCount() {

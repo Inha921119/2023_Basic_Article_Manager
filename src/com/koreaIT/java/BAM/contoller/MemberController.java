@@ -1,7 +1,6 @@
 package com.koreaIT.java.BAM.contoller;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 import com.koreaIT.java.BAM.Util.Util;
@@ -10,18 +9,15 @@ import com.koreaIT.java.BAM.dto.Member;
 //@SuppressWarnings("unused")
 
 public class MemberController extends Controller {
-	private List<Member> members;
 	private Scanner sc;
-	public static Member loginedMember = null;
 	private String command;
 //	private String actionMethodName;
-	int lastMemberId;
 
 	public MemberController(Scanner sc) {
-		this.members = new ArrayList<>();
 		this.sc = sc;
-		this.lastMemberId = 3;
 	}
+
+	int lastMemberId = 3;
 
 	@Override
 	public void doAction(String command, String actionMethodName) {
@@ -112,11 +108,15 @@ public class MemberController extends Controller {
 	}
 
 	private void doLogin() {
-		if (loginedMember != null) {
+		if (isLogined()) {
 			System.out.printf("현재 접속중입니다.\n다시 로그인을 원하시면 로그아웃을 해주세요\n");
 			return;
 		}
+
+		int pwWrongCount = 0;
+
 		while (true) {
+
 			System.out.printf("아이디 : ");
 			String loginId = sc.nextLine();
 
@@ -129,12 +129,46 @@ public class MemberController extends Controller {
 				System.out.println("해당 회원은 존재하지 않습니다");
 				continue;
 			}
-
-			if (member.loginPw.equals(loginPw) == false) {
-				System.out.println("비밀번호를 확인해주세요");
+			
+			if (pwWrongCount == 4) {
+				System.out.println("비밀번호 5회 오류입니다");
+				pwWrongCount++;
 				continue;
 			}
-
+			
+			if (pwWrongCount >= 5) {
+				int leftLimit = 48;
+				int rightLimit = 122;
+				int targetStringLength = 5;
+				Random random = new Random();
+				
+				String otp = random.ints(leftLimit, rightLimit + 1)
+						.filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97)).limit(targetStringLength)
+						.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+						.toString();
+				
+				System.out.println("보안문자를 입력해주세요");
+				System.out.println(otp);
+				String otpCheck = sc.nextLine();
+				if (otp.equals(otpCheck) && member.loginPw.equals(loginPw) == true) {
+					loginedMember = member;
+					loginedMember.lastLoginDate = Util.getNowDateTime();
+					System.out.println("로그인 되었습니다");
+					pwWrongCount = 0;
+					break;
+				}
+				System.out.println("비밀번호와 보안문자를 확인해주세요");
+				continue;
+			}
+			
+			if (member.loginPw.equals(loginPw) == false) {
+				if (pwWrongCount < 5) {
+					System.out.println("비밀번호를 확인해주세요");
+					pwWrongCount++;
+					continue;
+				}
+			}
+			
 			loginedMember = member;
 			loginedMember.lastLoginDate = Util.getNowDateTime();
 			System.out.println("로그인 되었습니다");
@@ -144,26 +178,24 @@ public class MemberController extends Controller {
 	}
 
 	private void doLogout() {
-		if (loginedMember == null) {
-			System.out.printf("로그인 후 사용가능합니다\n");
-			return;
+		if (isLogined() == false) {
+			System.out.println("로그인 후 사용가능합니다");
 		}
 		loginedMember = null;
 		System.out.println("로그아웃 되었습니다");
 	}
 
 	private void doDelete() {
-		if (loginedMember == null) {
-			System.out.printf("로그인 후 사용가능합니다\n");
-			return;
+		if (isLogined() == false) {
+			System.out.println("로그인 후 사용가능합니다");
 		}
 		System.out.println("탈퇴하시겠습니까? Y / N");
 		String deleteCheck = sc.nextLine().trim();
 
 		if (deleteCheck.equals("Y") || deleteCheck.equals("y")) {
-//			loginedMember.remove(loginedMember.indexOf(loginedMember));
-
+			members.remove(members.indexOf(loginedMember));
 			loginedMember = null;
+
 			System.out.println("탈퇴가 완료되었습니다");
 			System.out.println("초기화면으로 돌아갑니다");
 			return;
@@ -178,9 +210,8 @@ public class MemberController extends Controller {
 	}
 
 	private void showProfile() {
-		if (loginedMember == null) {
-			System.out.printf("로그인 후 사용가능합니다\n");
-			return;
+		if (isLogined() == false) {
+			System.out.println("로그인 후 사용가능합니다");
 		}
 
 		String searchKeyword = command.substring("member profile".length()).trim();
