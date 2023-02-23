@@ -48,6 +48,10 @@ public class MemberController extends Controller {
 	}
 
 	private void doJoin() {
+		if (isLogined()) {
+			System.out.println("로그아웃 후 이용가능합니다.");
+			return;
+		}
 		int id = lastMemberId + 1;
 
 		String loginId = null;
@@ -184,7 +188,7 @@ public class MemberController extends Controller {
 
 	private void doLogout() {
 		if (isLogined() == false) {
-			System.out.println("로그인 후 사용가능합니다");
+			System.out.println("로그인 후 이용가능합니다");
 			return;
 		}
 		loginedMember = null;
@@ -193,7 +197,7 @@ public class MemberController extends Controller {
 
 	private void doDelete() {
 		if (isLogined() == false) {
-			System.out.println("로그인 후 사용가능합니다");
+			System.out.println("로그인 후 이용가능합니다");
 		}
 		System.out.println("탈퇴하시겠습니까? Y / N");
 		String deleteCheck = sc.nextLine().trim();
@@ -217,7 +221,7 @@ public class MemberController extends Controller {
 
 	private void showProfile() {
 		if (isLogined() == false) {
-			System.out.println("로그인 후 사용가능합니다");
+			System.out.println("로그인 후 이용가능합니다");
 		}
 
 		String searchKeyword = command.substring("member profile".length()).trim();
@@ -225,18 +229,22 @@ public class MemberController extends Controller {
 		if (searchKeyword.length() > 0) {
 			for (Member member : members) {
 				if (searchKeyword.equals(member.loginId)) {
+					System.out.println("==============================");
 					System.out.printf("%s의 프로필\n", member.loginId);
 					System.out.printf("아이디 : %s\n", member.loginId);
 					System.out.printf("이름 : %s\n", member.name);
 					System.out.printf("가입날짜 : %s\n", member.regDate.substring(0, 10));
 					System.out.printf("마지막 접속날짜 : %s\n", member.lastLoginDate.substring(0, 10));
+					System.out.println("==============================");
 				}
 			}
 		} else {
+			System.out.println("=========== 내 정보 ==========");
 			System.out.printf("아이디 : %s\n", loginedMember.loginId);
 			System.out.printf("이름 : %s\n", loginedMember.name);
 			System.out.printf("가입날짜 : %s\n", loginedMember.regDate.substring(0, 10));
 			System.out.printf("마지막 접속날짜 : %s\n", loginedMember.lastLoginDate.substring(0, 10));
+			System.out.println("==============================");
 		}
 		return;
 	}

@@ -79,6 +79,7 @@ public class ArticleController extends Controller {
 		}
 		
 		String writerName = null;
+		String shortTitle = null;
 
 		System.out.println("|번호	|제목		|날짜		|작성자		|조회수		");
 		Collections.reverse(printArticles);
@@ -90,8 +91,13 @@ public class ArticleController extends Controller {
 					break;
 				}
 			}
+			if (article.title.length() > 5) {
+				shortTitle = article.title.substring(0, 3) + "...";
+			} else {
+				shortTitle = article.title;
+			}
 			
-			System.out.printf("|%d	|%.6s		|%s	|%.5s		|%d		\n", article.id, article.title,
+			System.out.printf("|%d	|%s		|%s	|%.5s		|%d		\n", article.id, shortTitle,
 					article.regDate.substring(0, 10), writerName, article.viewcount);
 		}
 
@@ -99,7 +105,7 @@ public class ArticleController extends Controller {
 
 	private void doWrite() {
 		if (isLogined() == false) {
-			System.out.println("로그인 후 사용가능합니다");
+			System.out.println("로그인 후 이용가능합니다");
 		}
 		int id = lastArticleId + 1;
 		int writerId = loginedMember.id;
@@ -160,7 +166,7 @@ public class ArticleController extends Controller {
 
 	private void doDelete() {
 		if (isLogined() == false) {
-			System.out.println("로그인 후 사용가능합니다");
+			System.out.println("로그인 후 이용가능합니다");
 		}
 		int id = getEndNum(command);
 		if (id == -1) {
@@ -185,7 +191,7 @@ public class ArticleController extends Controller {
 
 	private void doModify() {
 		if (isLogined() == false) {
-			System.out.println("로그인 후 사용가능합니다");
+			System.out.println("로그인 후 이용가능합니다");
 		}
 		int id = getEndNum(command);
 		if (id == -1) {
