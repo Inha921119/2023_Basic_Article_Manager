@@ -106,6 +106,7 @@ public class ArticleController extends Controller {
 	private void doWrite() {
 		if (isLogined() == false) {
 			System.out.println("로그인 후 이용가능합니다");
+			return;
 		}
 		int id = lastArticleId + 1;
 		int writerId = loginedMember.id;
@@ -167,6 +168,7 @@ public class ArticleController extends Controller {
 	private void doDelete() {
 		if (isLogined() == false) {
 			System.out.println("로그인 후 이용가능합니다");
+			return;
 		}
 		int id = getEndNum(command);
 		if (id == -1) {
@@ -192,6 +194,7 @@ public class ArticleController extends Controller {
 	private void doModify() {
 		if (isLogined() == false) {
 			System.out.println("로그인 후 이용가능합니다");
+			return;
 		}
 		int id = getEndNum(command);
 		if (id == -1) {

@@ -40,12 +40,16 @@ public class MemberController extends Controller {
 		case "profile":
 			showProfile();
 			break;
+		case "pwchange":
+			doPwChange();
+			break;
 		default:
 			System.out.println("존재하지 않는 명령어 입니다.");
 			System.out.println("도움이 필요하시면 'help'를 입력하세요");
 			break;
 		}
 	}
+
 
 	private void doJoin() {
 		if (isLogined()) {
@@ -222,6 +226,7 @@ public class MemberController extends Controller {
 	private void showProfile() {
 		if (isLogined() == false) {
 			System.out.println("로그인 후 이용가능합니다");
+			return;
 		}
 
 		String searchKeyword = command.substring("member profile".length()).trim();
@@ -247,6 +252,55 @@ public class MemberController extends Controller {
 			System.out.println("==============================");
 		}
 		return;
+	}
+	private void doPwChange() {
+		if (isLogined() == false) {
+			System.out.println("로그인 후 이용가능합니다");
+			return;
+		}
+		System.out.println("비밀번호를 변경하시겠습니까? Y / N");
+		String ChangeCheck = sc.nextLine().trim();
+		
+		if (ChangeCheck.equals("Y") || ChangeCheck.equals("y")) {
+			while (true) {
+				System.out.println("기존 비밀번호를 입력해주세요");
+				String PwCheck = sc.nextLine().trim();
+				
+				if (PwCheck.equals(loginedMember.loginPw)) {
+					String loginPw = null;
+					String loginPwChk = null;
+					while (true) {
+						System.out.printf("변경할 비밀번호 : ");
+						loginPw = sc.nextLine().trim();
+						if (loginPw.equals("")) {
+							System.out.println("필수 정보입니다.");
+							continue;
+						}
+						System.out.printf("변경할 비밀번호 확인: ");
+						loginPwChk = sc.nextLine().trim();
+						
+						if (loginPw.equals(loginPwChk) == false) {
+							System.out.println("비밀번호를 다시 입력해주세요");
+							continue;
+						}
+						break;
+					}
+					loginedMember.loginPw = loginPw;
+					
+					System.out.println("비밀번호 변경이 완료되었습니다.");
+					System.out.println("초기화면으로 돌아갑니다");
+					return;
+				} 
+				System.out.println("비밀번호가 일치하지 않습니다.");
+				continue;
+			}
+		} else if (ChangeCheck.equals("N") || ChangeCheck.equals("n")) {
+			System.out.println("초기화면으로 돌아갑니다");
+			return;
+		} else {
+			System.out.println("'Y'/'y' 또는 'N'/'n' 을 입력해주세요");
+			return;
+		}
 	}
 
 	private Member getMemberByLoginId(String loginId) {
