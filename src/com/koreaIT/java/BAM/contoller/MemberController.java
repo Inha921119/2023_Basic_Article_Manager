@@ -338,8 +338,8 @@ public class MemberController extends Controller {
 
 	public void makeTestData() {
 		System.out.println("계정 테스트 데이터를 생성합니다");
-		members.add(new Member(1, Util.getNowDateTime(), "test1", "1111", "test1"));
-		members.add(new Member(2, Util.getNowDateTime(), "test2", "2222", "test2"));
-		members.add(new Member(3, Util.getNowDateTime(), "test3", "3333", "test3"));
+		members.add(new Member(1, Util.getNowDateTime(), "test1", "1111", "반주희"));
+		members.add(new Member(2, Util.getNowDateTime(), "test2", "2222", "권라떼"));
+		members.add(new Member(3, Util.getNowDateTime(), "test3", "3333", "박다혜"));
 	}
 }
