@@ -26,21 +26,41 @@ public class MemberController extends Controller {
 
 		switch (actionMethodName) {
 		case "join":
+			if (isLogined()) {
+				System.out.println("로그아웃 후 이용가능합니다.");
+				break;
+			}
 			doJoin();
 			break;
 		case "login":
 			doLogin();
 			break;
 		case "logout":
+			if (isLogined() == false) {
+				System.out.println("로그인 후 이용가능합니다");
+				break;
+			}
 			doLogout();
 			break;
 		case "delete":
+			if (isLogined() == false) {
+				System.out.println("로그인 후 이용가능합니다");
+				break;
+			}
 			doDelete();
 			break;
 		case "profile":
+			if (isLogined() == false) {
+				System.out.println("로그인 후 이용가능합니다");
+				break;
+			}
 			showProfile();
 			break;
 		case "pwchange":
+			if (isLogined() == false) {
+				System.out.println("로그인 후 이용가능합니다");
+				break;
+			}
 			doPwChange();
 			break;
 		default:
@@ -52,10 +72,6 @@ public class MemberController extends Controller {
 
 
 	private void doJoin() {
-		if (isLogined()) {
-			System.out.println("로그아웃 후 이용가능합니다.");
-			return;
-		}
 		int id = lastMemberId + 1;
 
 		String loginId = null;
@@ -191,10 +207,6 @@ public class MemberController extends Controller {
 	}
 
 	private void doLogout() {
-		if (isLogined() == false) {
-			System.out.println("로그인 후 이용가능합니다");
-			return;
-		}
 		loginedMember = null;
 		System.out.println("로그아웃 되었습니다");
 	}
@@ -224,11 +236,6 @@ public class MemberController extends Controller {
 	}
 
 	private void showProfile() {
-		if (isLogined() == false) {
-			System.out.println("로그인 후 이용가능합니다");
-			return;
-		}
-
 		String searchKeyword = command.substring("member profile".length()).trim();
 
 		if (searchKeyword.length() > 0) {
@@ -254,10 +261,6 @@ public class MemberController extends Controller {
 		return;
 	}
 	private void doPwChange() {
-		if (isLogined() == false) {
-			System.out.println("로그인 후 이용가능합니다");
-			return;
-		}
 		System.out.println("비밀번호를 변경하시겠습니까? Y / N");
 		String ChangeCheck = sc.nextLine().trim();
 		

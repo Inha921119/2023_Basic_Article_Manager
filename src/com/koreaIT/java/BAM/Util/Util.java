@@ -17,6 +17,7 @@ public class Util {
 		System.out.println("member join : 회원가입을 합니다");
 		System.out.println("member login : 로그인을 합니다");
 		System.out.println("member logout : 로그아웃을 합니다");
+		System.out.println("member pwchange : 비밀번호를 변경합니다");
 		System.out.println("member delete : 회원탈퇴를 합니다");
 		System.out.println("member profile : 자신의 정보를 보여줍니다");
 		System.out.println("member profile 아이디 : 입력된 아이디의 정보를 보여줍니다");

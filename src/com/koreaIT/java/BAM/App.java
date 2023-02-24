@@ -29,12 +29,12 @@ public class App {
 				System.out.println("명령어를 입력해 주세요.");
 				continue;
 			}
-			
+
 			if (command.equals("help")) {
 				Util.CommandHelp();
 				continue;
 			}
-			
+
 			if (command.equals("exit")) {
 				break;
 			}
@@ -52,12 +52,9 @@ public class App {
 			controller = null;
 
 			if (controllerName.equals("article")) {
-				if (MemberController.loginedMember == null) {
-					System.out.println("로그인 후 이용해주세요");
-					continue;
-				} else {
-					controller = articleController;
-				}
+				
+				controller = articleController;
+				
 			} else if (controllerName.equals("member")) {
 
 				controller = memberController;
