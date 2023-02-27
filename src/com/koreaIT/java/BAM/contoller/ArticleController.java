@@ -34,27 +34,15 @@ public class ArticleController extends Controller {
 			showList();
 			break;
 		case "write":
-			if (isLogined() == false) {
-				System.out.println("로그인 후 이용가능합니다");
-				break;
-			}
 			doWrite();
 			break;
 		case "detail":
 			showDetail();
 			break;
 		case "delete":
-			if (isLogined() == false) {
-				System.out.println("로그인 후 이용가능합니다");
-				break;
-			}
 			doDelete();
 			break;
 		case "modify":
-			if (isLogined() == false) {
-				System.out.println("로그인 후 이용가능합니다");
-				break;
-			}
 			doModify();
 			break;
 		default:
@@ -147,8 +135,13 @@ public class ArticleController extends Controller {
 			return;
 		}
 
-		if (loginedMember.id != foundArticle.memberId) {
+		
+		if (loginedMember == null) {
 			foundArticle.increseViewCount();
+		} else if (loginedMember != null) {
+			if (loginedMember.id != foundArticle.memberId) {
+				foundArticle.increseViewCount();
+			}
 		}
 
 		String writerName = null;

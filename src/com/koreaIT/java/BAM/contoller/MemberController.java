@@ -26,41 +26,21 @@ public class MemberController extends Controller {
 
 		switch (actionMethodName) {
 		case "join":
-			if (isLogined()) {
-				System.out.println("로그아웃 후 이용가능합니다.");
-				break;
-			}
 			doJoin();
 			break;
 		case "login":
 			doLogin();
 			break;
 		case "logout":
-			if (isLogined() == false) {
-				System.out.println("로그인 후 이용가능합니다");
-				break;
-			}
 			doLogout();
 			break;
 		case "delete":
-			if (isLogined() == false) {
-				System.out.println("로그인 후 이용가능합니다");
-				break;
-			}
 			doDelete();
 			break;
 		case "profile":
-			if (isLogined() == false) {
-				System.out.println("로그인 후 이용가능합니다");
-				break;
-			}
 			showProfile();
 			break;
 		case "pwchange":
-			if (isLogined() == false) {
-				System.out.println("로그인 후 이용가능합니다");
-				break;
-			}
 			doPwChange();
 			break;
 		default:

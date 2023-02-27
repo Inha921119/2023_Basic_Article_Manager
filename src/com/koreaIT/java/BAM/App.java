@@ -49,20 +49,41 @@ public class App {
 			}
 
 			String actionMethodName = cmdBits[1];
+			
 			controller = null;
 
 			if (controllerName.equals("article")) {
-				
 				controller = articleController;
-				
 			} else if (controllerName.equals("member")) {
-
 				controller = memberController;
-
 			} else {
 				System.out.println("존재하지 않는 명령어 입니다.");
 				System.out.println("도움이 필요하시면 'help'를 입력하세요");
 				continue;
+			}
+
+			String actionName = controller + "/" + actionMethodName;
+
+			switch (actionName) {
+			case "article/write":
+			case "article/delete":
+			case "article/modify":
+			case "member/logout":
+			case "member/delete":
+			case "member/profile":
+			case "member/pwchange":
+				if (Controller.isLogined() == false) {
+					System.out.println("로그인 후 이용가능합니다");
+					continue;
+				}
+				break;
+			case "member/join":
+			case "member/login":
+				if (Controller.isLogined()) {
+					System.out.println("로그아웃 후 이용가능합니다.");
+					continue;
+				}
+				break;
 			}
 
 			controller.doAction(command, actionMethodName);
