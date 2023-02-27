@@ -1,28 +1,31 @@
 package com.koreaIT.java.BAM.contoller;
 
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
 import com.koreaIT.java.BAM.Util.Util;
+import com.koreaIT.java.BAM.container.Container;
 import com.koreaIT.java.BAM.dto.Member;
 
 //@SuppressWarnings("unused")
 
 public class MemberController extends Controller {
+	private List<Member> members;
 	private Scanner sc;
 	private String command;
-//	private String actionMethodName;
+	int lastMemberId;
 
 	public MemberController(Scanner sc) {
+		this.members = Container.memberDao.members;
 		this.sc = sc;
+		this.lastMemberId = 3;
 	}
 
-	int lastMemberId = 3;
 
 	@Override
 	public void doAction(String command, String actionMethodName) {
 		this.command = command;
-//		this.actionMethodName = actionMethodName;
 
 		switch (actionMethodName) {
 		case "join":

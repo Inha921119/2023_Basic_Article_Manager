@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.koreaIT.java.BAM.Util.Util;
+import com.koreaIT.java.BAM.container.Container;
 import com.koreaIT.java.BAM.dto.Article;
 import com.koreaIT.java.BAM.dto.Member;
 
@@ -15,11 +16,10 @@ public class ArticleController extends Controller {
 	private List<Article> articles;
 	private Scanner sc;
 	private String command;
-//	private String actionMethodName;
 	int lastArticleId;
 
 	public ArticleController(Scanner sc) {
-		this.articles = new ArrayList<>();
+		this.articles = Container.articleDao.articles;
 		this.sc = sc;
 		this.lastArticleId = 3;
 	}
@@ -27,7 +27,6 @@ public class ArticleController extends Controller {
 	@Override
 	public void doAction(String command, String actionMethodName) {
 		this.command = command;
-//		this.actionMethodName = actionMethodName;
 
 		switch (actionMethodName) {
 		case "list":
@@ -85,6 +84,9 @@ public class ArticleController extends Controller {
 		Collections.reverse(printArticles);
 
 		for (Article article : printArticles) {
+			
+			List<Member> members = Container.memberDao.members;
+			
 			for (Member member : members) {
 				if (article.memberId == member.id) {
 					writerName = member.name;
@@ -146,7 +148,7 @@ public class ArticleController extends Controller {
 
 		String writerName = null;
 
-		for (Member member : members) {
+		for (Member member : Container.memberDao.members) {
 			if (foundArticle.memberId == member.id) {
 				writerName = member.loginId;
 				break;
