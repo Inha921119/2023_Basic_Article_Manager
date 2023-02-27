@@ -62,7 +62,7 @@ public class App {
 				continue;
 			}
 
-			String actionName = controller + "/" + actionMethodName;
+			String actionName = controllerName + "/" + actionMethodName;
 
 			switch (actionName) {
 			case "article/write":
