@@ -3,6 +3,7 @@ package com.koreaIT.java.BAM.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.koreaIT.java.BAM.container.Container;
 import com.koreaIT.java.BAM.dto.Member;
 
 public class MemberDao extends Dao {
@@ -14,6 +15,17 @@ public class MemberDao extends Dao {
 	public void add(Member member) {
 		members.add(member);
 		lastId++;
+	}
+	public List<Member> getWriteMember() {
+		String writerName;
+		
+		for (Member member : members) {
+			if (Container.articleDao.articles.memberId == member.id) {
+				Container.articleDao.articles.writerName = member.name;
+				return writerName;
+			}
+		}
+		return writerName;
 	}
 }
 

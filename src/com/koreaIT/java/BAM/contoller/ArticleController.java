@@ -68,20 +68,9 @@ public class ArticleController extends Controller {
 
 		for (Article article : printArticles) {
 			
-			List<Member> members = Container.memberDao.members;
+			List<Member> members = Container.memberService.getWriteMember();
 			
-			for (Member member : members) {
-				if (article.memberId == member.id) {
-					writerName = member.name;
-					break;
-				}
-			}
-			if (article.title.length() > 5) {
-				shortTitle = article.title.substring(0, 3) + "...";
-			} else {
-				shortTitle = article.title;
-			}
-
+			
 			System.out.printf("|%d	|%s		|%s	|%.5s		|%d		\n", article.id, shortTitle,
 					article.regDate.substring(0, 10), writerName, article.viewcount);
 		}
