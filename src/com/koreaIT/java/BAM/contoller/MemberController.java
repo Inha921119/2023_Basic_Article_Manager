@@ -20,7 +20,6 @@ public class MemberController extends Controller {
 		this.sc = sc;
 	}
 
-
 	@Override
 	public void doAction(String command, String actionMethodName) {
 		this.command = command;
@@ -57,7 +56,6 @@ public class MemberController extends Controller {
 		}
 	}
 
-
 	private void doJoin() {
 		int id = Container.memberDao.getLastId();
 
@@ -71,7 +69,7 @@ public class MemberController extends Controller {
 				continue;
 			}
 
-			if (loginId.equals("")) {
+			if (loginId.length() == 0) {
 				System.out.println("필수 정보입니다.");
 				continue;
 			}
@@ -84,7 +82,7 @@ public class MemberController extends Controller {
 		while (true) {
 			System.out.printf("로그인 비밀번호 : ");
 			loginPw = sc.nextLine().trim();
-			if (loginPw.equals("")) {
+			if (loginPw.length() == 0) {
 				System.out.println("필수 정보입니다.");
 				continue;
 			}
@@ -102,13 +100,13 @@ public class MemberController extends Controller {
 		while (true) {
 			System.out.printf("이름 : ");
 			name = sc.nextLine().trim();
-			if (name.equals("")) {
+			if (name.length() == 0) {
 				System.out.println("필수 정보입니다.");
 				continue;
 			}
 			break;
 		}
-		
+
 		String mobileNum = null;
 		while (true) {
 			System.out.printf("전화번호 : ");
@@ -119,13 +117,13 @@ public class MemberController extends Controller {
 				continue;
 			}
 
-			if (mobileNum.equals("")) {
+			if (mobileNum.length() == 0) {
 				System.out.println("필수 정보입니다.");
 				continue;
 			}
 			break;
 		}
-		
+
 		String regDate = Util.getNowDateTime();
 
 		Member member = new Member(id, regDate, loginId, loginPw, name, mobileNum);
@@ -144,12 +142,27 @@ public class MemberController extends Controller {
 		int pwWrongCount = 0;
 
 		while (true) {
-
-			System.out.printf("아이디 : ");
-			String loginId = sc.nextLine();
-
-			System.out.printf("비밀번호 : ");
-			String loginPw = sc.nextLine();
+			String loginId;
+			while (true) {
+				System.out.printf("아이디 : ");
+				loginId = sc.nextLine().trim();
+				if (loginId.length() == 0) {
+					System.out.println("아이디를 입력해주세요");
+					continue;
+				}
+				break;
+			}
+			
+			String loginPw;
+			while (true) {
+				System.out.printf("비밀번호 : ");
+				loginPw = sc.nextLine().trim();
+				if (loginPw.length() == 0) {
+					System.out.println("비밀번호를 입력해주세요");
+					continue;
+				}
+				break;
+			}
 
 			Member member = getMemberByLoginId(loginId);
 
@@ -157,7 +170,7 @@ public class MemberController extends Controller {
 				System.out.println("해당 회원은 존재하지 않습니다");
 				continue;
 			}
-			
+
 			if (pwWrongCount == 4) {
 				pwWrongCount++;
 				System.out.printf("비밀번호 오류 횟수 : %d\n", pwWrongCount);
@@ -165,19 +178,18 @@ public class MemberController extends Controller {
 				System.out.println("비밀번호와 보안문자를 입력해주세요");
 				continue;
 			}
-			
+
 			if (pwWrongCount >= 5) {
 				int leftLimit = 48;
 				int rightLimit = 122;
 				int targetStringLength = 5;
 				Random random = new Random();
-				
+
 				String otp = random.ints(leftLimit, rightLimit + 1)
 						.filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97)).limit(targetStringLength)
-						.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-						.toString();
-				
-				System.out.printf("보안문자 : %s\n" ,otp);
+						.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
+
+				System.out.printf("보안문자 : %s\n", otp);
 				System.out.printf("입력 : ");
 				String otpCheck = sc.nextLine();
 				if (otp.equals(otpCheck) && member.loginPw.equals(loginPw) == true) {
@@ -191,7 +203,7 @@ public class MemberController extends Controller {
 				pwWrongCount++;
 				continue;
 			}
-			
+
 			if (member.loginPw.equals(loginPw) == false) {
 				if (pwWrongCount < 5) {
 					System.out.println("비밀번호를 확인해주세요");
@@ -200,13 +212,12 @@ public class MemberController extends Controller {
 					continue;
 				}
 			}
-			
+
 			loginedMember = member;
 			loginedMember.lastLoginDate = Util.getNowDateTime();
 			System.out.println("로그인 되었습니다");
 			break;
 		}
-		return;
 	}
 
 	private void doLogout() {
@@ -264,28 +275,29 @@ public class MemberController extends Controller {
 		}
 		return;
 	}
+
 	private void doPwChange() {
 		System.out.println("비밀번호를 변경하시겠습니까? Y / N");
 		String ChangeCheck = sc.nextLine().trim();
-		
+
 		if (ChangeCheck.equals("Y") || ChangeCheck.equals("y")) {
 			while (true) {
 				System.out.println("기존 비밀번호를 입력해주세요");
 				String PwCheck = sc.nextLine().trim();
-				
+
 				if (PwCheck.equals(loginedMember.loginPw)) {
 					String loginPw = null;
 					String loginPwChk = null;
 					while (true) {
 						System.out.printf("변경할 비밀번호 : ");
 						loginPw = sc.nextLine().trim();
-						if (loginPw.equals("")) {
+						if (loginPw.length() == 0) {
 							System.out.println("필수 정보입니다.");
 							continue;
 						}
 						System.out.printf("변경할 비밀번호 확인: ");
 						loginPwChk = sc.nextLine().trim();
-						
+
 						if (loginPw.equals(loginPwChk) == false) {
 							System.out.println("비밀번호를 다시 입력해주세요");
 							continue;
@@ -293,11 +305,11 @@ public class MemberController extends Controller {
 						break;
 					}
 					loginedMember.loginPw = loginPw;
-					
+
 					System.out.println("비밀번호 변경이 완료되었습니다.");
 					System.out.println("초기화면으로 돌아갑니다");
 					return;
-				} 
+				}
 				System.out.println("비밀번호가 일치하지 않습니다.");
 				continue;
 			}
@@ -309,19 +321,19 @@ public class MemberController extends Controller {
 			return;
 		}
 	}
-	
+
 	private void doFindId() {
 		System.out.println("아이디를 찾습니다. 이름과 전화번호(- 제외)를 입력해주세요");
 		System.out.printf("이름 : ");
 		String NameChk = sc.nextLine().trim();
 		System.out.printf("전화번호 : ");
 		String mobileNumChk = sc.nextLine().trim();
-		
 
 	}
+
 	private void doFindPw() {
 		System.out.println("비밀번호를 찾습니다. 아이디와 이름, 전화번호를 입력해주세요");
-		
+
 	}
 
 	private Member getMemberByLoginId(String loginId) {
@@ -353,6 +365,7 @@ public class MemberController extends Controller {
 		}
 		return true;
 	}
+
 	private boolean mobileNumDupChk(String mobileNum) {
 		for (Member member : members) {
 			if (member.mobileNum.equals(mobileNum)) {
@@ -364,8 +377,11 @@ public class MemberController extends Controller {
 
 	public void makeTestData() {
 		System.out.println("계정 테스트 데이터를 생성합니다");
-		Container.memberDao.add(new Member(Container.memberDao.getLastId(), Util.getNowDateTime(), "test1", "1111", "반주희", "01012341234"));
-		Container.memberDao.add(new Member(Container.memberDao.getLastId(), Util.getNowDateTime(), "test2", "2222", "권라떼", "01023452345"));
-		Container.memberDao.add(new Member(Container.memberDao.getLastId(), Util.getNowDateTime(), "test3", "3333", "박다혜", "01034563456"));
+		Container.memberDao.add(new Member(Container.memberDao.getLastId(), Util.getNowDateTime(), "test1", "1111",
+				"반주희", "01012341234"));
+		Container.memberDao.add(new Member(Container.memberDao.getLastId(), Util.getNowDateTime(), "test2", "2222",
+				"권라떼", "01023452345"));
+		Container.memberDao.add(new Member(Container.memberDao.getLastId(), Util.getNowDateTime(), "test3", "3333",
+				"박다혜", "01034563456"));
 	}
 }
