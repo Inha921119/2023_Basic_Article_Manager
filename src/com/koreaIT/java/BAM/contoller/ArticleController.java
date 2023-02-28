@@ -60,8 +60,7 @@ public class ArticleController extends Controller {
 			return;
 		}
 		
-		String writerName = null;
-		String shortTitle = null;
+		
 
 		System.out.println("|번호	|제목		|날짜		|작성자		|조회수		");
 		Collections.reverse(printArticles);
