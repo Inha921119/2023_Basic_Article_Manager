@@ -16,12 +16,10 @@ public class ArticleController extends Controller {
 	private List<Article> articles;
 	private Scanner sc;
 	private String command;
-	int lastArticleId;
 
 	public ArticleController(Scanner sc) {
 		this.articles = Container.articleDao.articles;
 		this.sc = sc;
-		this.lastArticleId = 3;
 	}
 
 	@Override
@@ -106,7 +104,7 @@ public class ArticleController extends Controller {
 	}
 
 	private void doWrite() {
-		int id = lastArticleId + 1;
+		int id = Container.articleDao.getLastId();
 		System.out.printf("제목 : ");
 		String title = sc.nextLine();
 
@@ -117,10 +115,9 @@ public class ArticleController extends Controller {
 
 		Article article = new Article(id, regDate, loginedMember.id, title, body);
 
-		articles.add(article);
+		Container.articleDao.add(article);
 
 		System.out.printf("%d번 글이 생성되었습니다.\n", id);
-		lastArticleId++;
 	}
 
 	private void showDetail() {
@@ -270,8 +267,8 @@ public class ArticleController extends Controller {
 
 	public void makeTestData() {
 		System.out.println("게시물 테스트 데이터를 생성합니다");
-		articles.add(new Article(1, Util.getNowDateTime(), 1, "제목1", "내용1", 11));
-		articles.add(new Article(2, Util.getNowDateTime(), 2, "제목2", "내용2", 22));
-		articles.add(new Article(3, Util.getNowDateTime(), 3, "제목3", "내용3", 33));
+		Container.articleDao.add(new Article(Container.articleDao.getLastId(), Util.getNowDateTime(), 1, "제목1", "내용1", 11));
+		Container.articleDao.add(new Article(Container.articleDao.getLastId(), Util.getNowDateTime(), 2, "제목2", "내용2", 22));
+		Container.articleDao.add(new Article(Container.articleDao.getLastId(), Util.getNowDateTime(), 3, "제목3", "내용3", 33));
 	}
 }

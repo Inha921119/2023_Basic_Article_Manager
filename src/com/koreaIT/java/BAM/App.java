@@ -79,6 +79,8 @@ public class App {
 				break;
 			case "member/join":
 			case "member/login":
+			case "member/findid":
+			case "member/findpw":
 				if (Controller.isLogined()) {
 					System.out.println("로그아웃 후 이용가능합니다.");
 					continue;

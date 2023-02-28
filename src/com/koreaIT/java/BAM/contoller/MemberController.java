@@ -14,12 +14,10 @@ public class MemberController extends Controller {
 	private List<Member> members;
 	private Scanner sc;
 	private String command;
-	int lastMemberId;
 
 	public MemberController(Scanner sc) {
 		this.members = Container.memberDao.members;
 		this.sc = sc;
-		this.lastMemberId = 3;
 	}
 
 
@@ -46,6 +44,12 @@ public class MemberController extends Controller {
 		case "pwchange":
 			doPwChange();
 			break;
+		case "findid":
+			doFindId();
+			break;
+		case "findpw":
+			doFindPw();
+			break;
 		default:
 			System.out.println("존재하지 않는 명령어 입니다.");
 			System.out.println("도움이 필요하시면 'help'를 입력하세요");
@@ -55,7 +59,7 @@ public class MemberController extends Controller {
 
 
 	private void doJoin() {
-		int id = lastMemberId + 1;
+		int id = Container.memberDao.getLastId();
 
 		String loginId = null;
 		while (true) {
@@ -104,14 +108,30 @@ public class MemberController extends Controller {
 			}
 			break;
 		}
+		
+		String mobileNum = null;
+		while (true) {
+			System.out.printf("전화번호 : ");
+			mobileNum = sc.nextLine().trim();
 
+			if (mobileNumDupChk(mobileNum) == false) {
+				System.out.println("중복된 전화번호 입니다");
+				continue;
+			}
+
+			if (mobileNum.equals("")) {
+				System.out.println("필수 정보입니다.");
+				continue;
+			}
+			break;
+		}
+		
 		String regDate = Util.getNowDateTime();
 
-		Member member = new Member(id, regDate, loginId, loginPw, name);
-		members.add(member);
+		Member member = new Member(id, regDate, loginId, loginPw, name, mobileNum);
+		Container.memberDao.add(member);
 
-		System.out.printf("%s님 회원가입이 완료되었습니다.\n", loginId);
-		lastMemberId++;
+		System.out.printf("%s님 회원가입이 완료되었습니다.\n", name);
 	}
 
 	private void doLogin() {
@@ -237,6 +257,7 @@ public class MemberController extends Controller {
 			System.out.println("=========== 내 정보 ==========");
 			System.out.printf("아이디 : %s\n", loginedMember.loginId);
 			System.out.printf("이름 : %s\n", loginedMember.name);
+			System.out.printf("전화번호 : %s\n", loginedMember.mobileNum);
 			System.out.printf("가입날짜 : %s\n", loginedMember.regDate.substring(0, 10));
 			System.out.printf("마지막 접속날짜 : %s\n", loginedMember.lastLoginDate.substring(0, 10));
 			System.out.println("==============================");
@@ -288,6 +309,20 @@ public class MemberController extends Controller {
 			return;
 		}
 	}
+	
+	private void doFindId() {
+		System.out.println("아이디를 찾습니다. 이름과 전화번호(- 제외)를 입력해주세요");
+		System.out.printf("이름 : ");
+		String NameChk = sc.nextLine().trim();
+		System.out.printf("전화번호 : ");
+		String mobileNumChk = sc.nextLine().trim();
+		
+
+	}
+	private void doFindPw() {
+		System.out.println("비밀번호를 찾습니다. 아이디와 이름, 전화번호를 입력해주세요");
+		
+	}
 
 	private Member getMemberByLoginId(String loginId) {
 		int index = getMemberIndexByLoginId(loginId);
@@ -318,11 +353,19 @@ public class MemberController extends Controller {
 		}
 		return true;
 	}
+	private boolean mobileNumDupChk(String mobileNum) {
+		for (Member member : members) {
+			if (member.mobileNum.equals(mobileNum)) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	public void makeTestData() {
 		System.out.println("계정 테스트 데이터를 생성합니다");
-		members.add(new Member(1, Util.getNowDateTime(), "test1", "1111", "반주희"));
-		members.add(new Member(2, Util.getNowDateTime(), "test2", "2222", "권라떼"));
-		members.add(new Member(3, Util.getNowDateTime(), "test3", "3333", "박다혜"));
+		Container.memberDao.add(new Member(Container.memberDao.getLastId(), Util.getNowDateTime(), "test1", "1111", "반주희", "01012341234"));
+		Container.memberDao.add(new Member(Container.memberDao.getLastId(), Util.getNowDateTime(), "test2", "2222", "권라떼", "01023452345"));
+		Container.memberDao.add(new Member(Container.memberDao.getLastId(), Util.getNowDateTime(), "test3", "3333", "박다혜", "01034563456"));
 	}
 }

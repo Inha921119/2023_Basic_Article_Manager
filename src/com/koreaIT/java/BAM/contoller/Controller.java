@@ -5,7 +5,7 @@ import com.koreaIT.java.BAM.dto.Member;
 public abstract class Controller {
 	public abstract void doAction(String command, String actionMethodName);
 	
-	public static Member loginedMember = null;
+	public static Member loginedMember;
 
 	public static boolean isLogined() {
 		return loginedMember != null;
