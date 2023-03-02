@@ -7,6 +7,7 @@ import com.koreaIT.java.BAM.Util.Util;
 import com.koreaIT.java.BAM.container.Container;
 import com.koreaIT.java.BAM.dto.Article;
 import com.koreaIT.java.BAM.service.ArticleService;
+import com.koreaIT.java.BAM.service.MemberService;
 
 //@SuppressWarnings("unused")
 
@@ -14,9 +15,11 @@ public class ArticleController extends Controller {
 	private Scanner sc;
 	private String command;
 	private ArticleService articleService;
+	private MemberService memberService;
 
 	public ArticleController(Scanner sc) {
 		this.articleService = Container.articleService;
+		this.memberService = Container.memberService;
 		this.sc = sc;
 	}
 
@@ -61,7 +64,7 @@ public class ArticleController extends Controller {
 		for (int i = printArticles.size() - 1; i >= 0; i--) {
 			Article article = printArticles.get(i);
 
-			String writerName = Container.memberService.getWriterName(article.memberId);
+			String writerName = memberService.getWriterName(article.memberId);
 			String shortTitle = articleService.getShortTitle(article.title);
 
 			System.out.printf("|%d	|%s		|%s	|%.5s		|%d		\n", article.id, shortTitle,
@@ -109,7 +112,7 @@ public class ArticleController extends Controller {
 			}
 		}
 
-		String writerName = Container.memberService.getWriterName(foundArticle.memberId);
+		String writerName = memberService.getWriterName(foundArticle.memberId);
 
 		System.out.printf("번호 : %d\n", foundArticle.id);
 		System.out.printf("작성자 : %s\n", writerName);

@@ -3,35 +3,41 @@ package com.koreaIT.java.BAM.service;
 import java.util.List;
 
 import com.koreaIT.java.BAM.container.Container;
+import com.koreaIT.java.BAM.dao.ArticleDao;
 import com.koreaIT.java.BAM.dto.Article;
 
 public class ArticleService {
+	private ArticleDao articleDao;
+	
+	public ArticleService() {
+		this.articleDao = Container.articleDao;
+	}
 
 	public void add(Article article) {
-		Container.articleDao.add(article);
+		articleDao.add(article);
 	}
 	public void remove(Article article) {
-		Container.articleDao.remove(article);
+		articleDao.remove(article);
 	}
 	
 	public List<Article> getPrintArticles(String searchKeyword) {
-		return Container.articleDao.getPrintArticles(searchKeyword);
+		return articleDao.getPrintArticles(searchKeyword);
 	}
 
 	public String getShortTitle(String Title) {
-		return Container.articleDao.getShortTitle(Title);
+		return articleDao.getShortTitle(Title);
 	}
 	
 	public Article getArticleById(int id) {
-		return Container.articleDao.getArticleById(id);
+		return articleDao.getArticleById(id);
 	}
 	public int getLastId() {
-		return Container.articleDao.getLastId();
+		return articleDao.getLastId();
 	}
 	public void articleModifyTitle(Article foundArticle, String title, String lastModifyDate) {
-		Container.articleDao.articleModifyTitle(foundArticle, title, lastModifyDate);
+		articleDao.articleModifyTitle(foundArticle, title, lastModifyDate);
 	}
 	public void articleModifyBody(Article foundArticle, String body, String lastModifyDate) {
-		Container.articleDao.articleModifyBody(foundArticle, body, lastModifyDate);
+		articleDao.articleModifyBody(foundArticle, body, lastModifyDate);
 	}
 }
