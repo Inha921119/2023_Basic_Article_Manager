@@ -6,14 +6,17 @@ import java.util.Scanner;
 import com.koreaIT.java.BAM.Util.Util;
 import com.koreaIT.java.BAM.container.Container;
 import com.koreaIT.java.BAM.dto.Member;
+import com.koreaIT.java.BAM.service.MemberService;
 
 //@SuppressWarnings("unused")
 
 public class MemberController extends Controller {
 	private Scanner sc;
 	private String command;
+	private MemberService memberService;
 
 	public MemberController(Scanner sc) {
+		this.memberService = Container.memberService;
 		this.sc = sc;
 	}
 
@@ -54,14 +57,14 @@ public class MemberController extends Controller {
 	}
 
 	private void doJoin() {
-		int id = Container.memberDao.getLastId();
+		int id = memberService.getLastId();
 
 		String loginId = null;
 		while (true) {
 			System.out.printf("로그인 아이디 : ");
 			loginId = sc.nextLine().trim();
 
-			if (Container.memberService.loginIdDupChk(loginId) == false) {
+			if (memberService.loginIdDupChk(loginId) == false) {
 				System.out.printf("%s은(는) 이미 사용중인 아이디입니다\n", loginId);
 				continue;
 			}
@@ -109,7 +112,7 @@ public class MemberController extends Controller {
 			System.out.printf("전화번호 : ");
 			mobileNum = sc.nextLine().trim();
 
-			if (Container.memberService.mobileNumDupChk(mobileNum) == false) {
+			if (memberService.mobileNumDupChk(mobileNum) == false) {
 				System.out.println("중복된 전화번호 입니다");
 				continue;
 			}
@@ -124,7 +127,7 @@ public class MemberController extends Controller {
 		String regDate = Util.getNowDateTime();
 
 		Member member = new Member(id, regDate, loginId, loginPw, name, mobileNum);
-		Container.memberService.add(member);
+		memberService.add(member);
 
 		System.out.printf("%s님 회원가입이 완료되었습니다.\n", name);
 	}
@@ -161,7 +164,7 @@ public class MemberController extends Controller {
 				break;
 			}
 
-			Member member = Container.memberService.getMemberByLoginId(loginId);
+			Member member = memberService.getMemberByLoginId(loginId);
 
 			if (member == null) {
 				System.out.println("해당 회원은 존재하지 않습니다");
@@ -230,7 +233,7 @@ public class MemberController extends Controller {
 		String deleteCheck = sc.nextLine().trim();
 
 		if (deleteCheck.equals("Y") || deleteCheck.equals("y")) {
-			Container.memberService.remove(loginedMember);
+			memberService.remove(loginedMember);
 			loginedMember = null;
 
 			System.out.println("탈퇴가 완료되었습니다");
@@ -251,7 +254,7 @@ public class MemberController extends Controller {
 
 		if (searchKeyword.length() > 0) {
 
-			Member member = Container.memberDao.getSearchMemberId(searchKeyword);
+			Member member = memberService.getSearchMemberId(searchKeyword);
 			
 			if (member == null) {
 				System.out.println("회원 정보가 존재하지 않습니다.");
@@ -341,11 +344,11 @@ public class MemberController extends Controller {
 
 	public void makeTestData() {
 		System.out.println("계정 테스트 데이터를 생성합니다");
-		Container.memberDao.add(new Member(Container.memberDao.getLastId(), Util.getNowDateTime(), "test1", "1111",
+		memberService.add(new Member(memberService.getLastId(), Util.getNowDateTime(), "test1", "1111",
 				"반주희", "01012341234"));
-		Container.memberDao.add(new Member(Container.memberDao.getLastId(), Util.getNowDateTime(), "test2", "2222",
+		memberService.add(new Member(memberService.getLastId(), Util.getNowDateTime(), "test2", "2222",
 				"권라떼", "01023452345"));
-		Container.memberDao.add(new Member(Container.memberDao.getLastId(), Util.getNowDateTime(), "test3", "3333",
+		memberService.add(new Member(memberService.getLastId(), Util.getNowDateTime(), "test3", "3333",
 				"박다혜", "01034563456"));
 	}
 }

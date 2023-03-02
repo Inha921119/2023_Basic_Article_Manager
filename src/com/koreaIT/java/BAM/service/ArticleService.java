@@ -22,11 +22,16 @@ public class ArticleService {
 		return Container.articleDao.getShortTitle(Title);
 	}
 	
-	public String getWriteMemberName(int id) {
-		return Container.articleDao.getWriteMemberName(id);
-	}
-
 	public Article getArticleById(int id) {
 		return Container.articleDao.getArticleById(id);
+	}
+	public int getLastId() {
+		return Container.articleDao.getLastId();
+	}
+	public void articleModifyTitle(Article foundArticle, String title, String lastModifyDate) {
+		Container.articleDao.articleModifyTitle(foundArticle, title, lastModifyDate);
+	}
+	public void articleModifyBody(Article foundArticle, String body, String lastModifyDate) {
+		Container.articleDao.articleModifyBody(foundArticle, body, lastModifyDate);
 	}
 }

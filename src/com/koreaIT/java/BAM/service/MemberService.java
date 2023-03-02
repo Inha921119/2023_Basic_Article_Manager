@@ -21,4 +21,14 @@ public class MemberService {
 	public Member getMemberByLoginId(String loginId) {
 		return Container.memberDao.getMemberByLoginId(loginId);
 	}
+	
+	public String getWriterName(int id) {
+		return Container.memberDao.getWriterName(id);
+	}
+	public int getLastId() {
+		return Container.memberDao.getLastId();
+	}
+	public Member getSearchMemberId(String searchKeyword) {
+		return Container.memberDao.getSearchMemberId(searchKeyword);
+	}
 }

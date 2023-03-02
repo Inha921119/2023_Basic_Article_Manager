@@ -3,12 +3,10 @@ package com.koreaIT.java.BAM.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.koreaIT.java.BAM.container.Container;
 import com.koreaIT.java.BAM.dto.Article;
-import com.koreaIT.java.BAM.dto.Member;
 
 public class ArticleDao extends Dao {
-	public List<Article> articles;
+	private List<Article> articles;
 
 	public ArticleDao() {
 		this.articles = new ArrayList<>();
@@ -26,6 +24,7 @@ public class ArticleDao extends Dao {
 	public List<Article> getPrintArticles(String searchKeyword) {
 
 		if (searchKeyword.length() > 0) {
+			System.out.println("검색어 : " + searchKeyword);
 			List<Article> printArticles = new ArrayList<>();
 
 			for (Article article : articles) {
@@ -46,15 +45,6 @@ public class ArticleDao extends Dao {
 		}
 	}
 
-	public String getWriteMemberName(int id) {
-		for (Member member : Container.memberDao.members) {
-				if (id == member.id) {
-					return member.name;
-			}
-		}
-		return null;
-	}
-	
 	public Article getArticleById(int id) {
 		for (Article article : articles) {
 			if (article.id == id) {
@@ -62,6 +52,16 @@ public class ArticleDao extends Dao {
 			}
 		}
 		return null;
+	}
+
+	public void articleModifyTitle(Article foundArticle, String title, String lastModifyDate) {
+		foundArticle.title = title;
+		foundArticle.LastModifyDate = lastModifyDate;
+	}
+
+	public void articleModifyBody(Article foundArticle, String body, String lastModifyDate) {
+		foundArticle.body = body;
+		foundArticle.LastModifyDate = lastModifyDate;
 	}
 
 }

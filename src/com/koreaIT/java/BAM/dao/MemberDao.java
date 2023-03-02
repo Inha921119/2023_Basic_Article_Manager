@@ -6,7 +6,7 @@ import java.util.List;
 import com.koreaIT.java.BAM.dto.Member;
 
 public class MemberDao extends Dao {
-	public List<Member> members;
+	private List<Member> members;
 
 	public MemberDao() {
 		this.members = new ArrayList<>();
@@ -64,6 +64,15 @@ public class MemberDao extends Dao {
 		for (Member member : members) {
 			if (searchKeyword.equals(member.loginId)) {
 				return member;
+			}
+		}
+		return null;
+	}
+	
+	public String getWriterName(int id) {
+		for (Member member : members) {
+				if (id == member.id) {
+					return member.name;
 			}
 		}
 		return null;
