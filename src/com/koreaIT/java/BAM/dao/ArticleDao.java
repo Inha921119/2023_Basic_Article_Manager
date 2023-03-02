@@ -13,16 +13,19 @@ public class ArticleDao extends Dao {
 	public ArticleDao() {
 		this.articles = new ArrayList<>();
 	}
-	
+
 	public void add(Article article) {
 		articles.add(article);
 		lastId++;
 	}
+	
+	public void remove(Article article) {
+		articles.remove(article);
+	}
 
 	public List<Article> getPrintArticles(String searchKeyword) {
-		
-		if (searchKeyword != null) {
 
+		if (searchKeyword.length() > 0) {
 			List<Article> printArticles = new ArrayList<>();
 
 			for (Article article : articles) {
@@ -34,16 +37,31 @@ public class ArticleDao extends Dao {
 		}
 		return articles;
 	}
-	public List<Member> getWriteMember() {
-		String shortTitle = null;
-		
-		
-		if (Container.articleDao.length() > 5) {
-			shortTitle = article.title.substring(0, 3) + "...";
-		} else {
-			shortTitle = article.title;
-		}
 
+	public String getShortTitle(String Title) {
+		if (Title.length() > 5) {
+			return Title.substring(0, 3) + "...";
+		} else {
+			return Title;
+		}
+	}
+
+	public String getWriteMemberName(int id) {
+		for (Member member : Container.memberDao.members) {
+				if (id == member.id) {
+					return member.name;
+			}
+		}
 		return null;
 	}
+	
+	public Article getArticleById(int id) {
+		for (Article article : articles) {
+			if (article.id == id) {
+				return article;
+			}
+		}
+		return null;
+	}
+
 }

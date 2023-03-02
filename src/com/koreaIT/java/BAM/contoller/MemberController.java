@@ -1,6 +1,5 @@
 package com.koreaIT.java.BAM.contoller;
 
-import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -11,12 +10,10 @@ import com.koreaIT.java.BAM.dto.Member;
 //@SuppressWarnings("unused")
 
 public class MemberController extends Controller {
-	private List<Member> members;
 	private Scanner sc;
 	private String command;
 
 	public MemberController(Scanner sc) {
-		this.members = Container.memberDao.members;
 		this.sc = sc;
 	}
 
@@ -64,7 +61,7 @@ public class MemberController extends Controller {
 			System.out.printf("로그인 아이디 : ");
 			loginId = sc.nextLine().trim();
 
-			if (loginIdDupChk(loginId) == false) {
+			if (Container.memberService.loginIdDupChk(loginId) == false) {
 				System.out.printf("%s은(는) 이미 사용중인 아이디입니다\n", loginId);
 				continue;
 			}
@@ -112,7 +109,7 @@ public class MemberController extends Controller {
 			System.out.printf("전화번호 : ");
 			mobileNum = sc.nextLine().trim();
 
-			if (mobileNumDupChk(mobileNum) == false) {
+			if (Container.memberService.mobileNumDupChk(mobileNum) == false) {
 				System.out.println("중복된 전화번호 입니다");
 				continue;
 			}
@@ -127,7 +124,7 @@ public class MemberController extends Controller {
 		String regDate = Util.getNowDateTime();
 
 		Member member = new Member(id, regDate, loginId, loginPw, name, mobileNum);
-		Container.memberDao.add(member);
+		Container.memberService.add(member);
 
 		System.out.printf("%s님 회원가입이 완료되었습니다.\n", name);
 	}
@@ -152,7 +149,7 @@ public class MemberController extends Controller {
 				}
 				break;
 			}
-			
+
 			String loginPw;
 			while (true) {
 				System.out.printf("비밀번호 : ");
@@ -164,7 +161,7 @@ public class MemberController extends Controller {
 				break;
 			}
 
-			Member member = getMemberByLoginId(loginId);
+			Member member = Container.memberService.getMemberByLoginId(loginId);
 
 			if (member == null) {
 				System.out.println("해당 회원은 존재하지 않습니다");
@@ -233,7 +230,7 @@ public class MemberController extends Controller {
 		String deleteCheck = sc.nextLine().trim();
 
 		if (deleteCheck.equals("Y") || deleteCheck.equals("y")) {
-			members.remove(members.indexOf(loginedMember));
+			Container.memberService.remove(loginedMember);
 			loginedMember = null;
 
 			System.out.println("탈퇴가 완료되었습니다");
@@ -253,17 +250,21 @@ public class MemberController extends Controller {
 		String searchKeyword = command.substring("member profile".length()).trim();
 
 		if (searchKeyword.length() > 0) {
-			for (Member member : members) {
-				if (searchKeyword.equals(member.loginId)) {
-					System.out.println("==============================");
-					System.out.printf("%s의 프로필\n", member.loginId);
-					System.out.printf("아이디 : %s\n", member.loginId);
-					System.out.printf("이름 : %s\n", member.name);
-					System.out.printf("가입날짜 : %s\n", member.regDate.substring(0, 10));
-					System.out.printf("마지막 접속날짜 : %s\n", member.lastLoginDate.substring(0, 10));
-					System.out.println("==============================");
-				}
+
+			Member member = Container.memberDao.getSearchMemberId(searchKeyword);
+			
+			if (member == null) {
+				System.out.println("회원 정보가 존재하지 않습니다.");
+				return;
 			}
+			
+			System.out.println("==============================");
+			System.out.printf("%s의 프로필\n", member.loginId);
+			System.out.printf("아이디 : %s\n", member.loginId);
+			System.out.printf("이름 : %s\n", member.name);
+			System.out.printf("가입날짜 : %s\n", member.regDate.substring(0, 10));
+			System.out.printf("마지막 접속날짜 : %s\n", member.lastLoginDate.substring(0, 10));
+			System.out.println("==============================");
 		} else {
 			System.out.println("=========== 내 정보 ==========");
 			System.out.printf("아이디 : %s\n", loginedMember.loginId);
@@ -322,12 +323,13 @@ public class MemberController extends Controller {
 		}
 	}
 
+///// @@@@@@@@@@@@@@@@@@@@@@@구현중
 	private void doFindId() {
 		System.out.println("아이디를 찾습니다. 이름과 전화번호(- 제외)를 입력해주세요");
 		System.out.printf("이름 : ");
-		String NameChk = sc.nextLine().trim();
+//		String NameChk = sc.nextLine().trim();
 		System.out.printf("전화번호 : ");
-		String mobileNumChk = sc.nextLine().trim();
+//		String mobileNumChk = sc.nextLine().trim();
 
 	}
 
@@ -335,45 +337,7 @@ public class MemberController extends Controller {
 		System.out.println("비밀번호를 찾습니다. 아이디와 이름, 전화번호를 입력해주세요");
 
 	}
-
-	private Member getMemberByLoginId(String loginId) {
-		int index = getMemberIndexByLoginId(loginId);
-
-		if (index == -1) {
-			return null;
-		}
-
-		return members.get(index);
-	}
-
-	private int getMemberIndexByLoginId(String loginId) {
-		int i = 0;
-		for (Member member : members) {
-			if (member.loginId.equals(loginId)) {
-				return i;
-			}
-			i++;
-		}
-		return -1;
-	}
-
-	private boolean loginIdDupChk(String loginId) {
-		for (Member member : members) {
-			if (member.loginId.equals(loginId)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private boolean mobileNumDupChk(String mobileNum) {
-		for (Member member : members) {
-			if (member.mobileNum.equals(mobileNum)) {
-				return false;
-			}
-		}
-		return true;
-	}
+///// @@@@@@@@@@@@@@@@@@@@@@@구현중
 
 	public void makeTestData() {
 		System.out.println("계정 테스트 데이터를 생성합니다");
